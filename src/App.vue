@@ -531,17 +531,4 @@ small {
 </style>
 
 
-// drag-and-drop
 // border-color
-// box-shadow
-
-        <!-- <li v-show="showAll" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(task)" @mouseleave="removeCancel" v-for="task in tasks" :key="task">
-          <span>
-            <div class="check" ref="check" @click="addTick(task), checker" :class="{ colored: task.check, light: !darkmode }"> 
-              <img v-if="task.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
-            </div>
-            <p class="task" :class="{ checked: task.check, light: !darkmode }" ref='task' >{{ task.text }}</p>
-          </span>
-          <img v-show="task.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-          <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-        </li> -->
