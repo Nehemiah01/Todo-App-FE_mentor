@@ -16,54 +16,73 @@
 
     <span class="input">
       <div class="first-one" :class="{ light: !darkmode }"> </div>
-      <input type="text" :class="{ light: !darkmode }" v-model="task" @keyup.enter="addTask" placeholder="Add a new todo...">
+      <input type="text" :class="{ light: !darkmode }" v-model="task" @keyup.enter.exact="addTask" placeholder="Create a new todo...">
     </span>
 
+    <!-- <draggable v-model="tasks" tag="transition-group" item-key="id">
+      <template #item="{element}">
+          <div> {{element.text}} </div>
+      </template>
+    </draggable> -->
+    
     <div id="tasks" :class="{ light: !darkmode }">
-      <ul dropzone="true" @drop="onDrop(evt, 1)">
-        <li v-show="showAll" draggable="true" @dragstart="startDrag($evt, task)" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(task)" @mouseleave="removeCancel" v-for="task in tasks" :key="task">
-          <span>
-            <div class="check" ref="check" @click="addTick(task), checker" :class="{ colored: task.check, light: !darkmode }"> 
-              <img v-if="task.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
-            </div>
-            <p class="task" :class="{ checked: task.check, light: !darkmode }" ref='task' >{{ task.text }}</p>
-          </span>
-          <img v-show="task.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-          <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-        </li>
+
+      <ul>
+        <draggable v-model="tasks" tag="transition-group" item-key="id">
+          <template #item="{element}">            
+            <li v-show="showAll" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
+              <span>
+                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                  <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
+                </div>
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+              </span>
+              <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+              <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+            </li>
+          </template>
+        </draggable>
+
+        <draggable v-model="tasks" tag="transition-group" item-key="id">
+          <template #item="{element}">            
+            <li v-show="showActive && element.check == false" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
+              <span>
+                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                  <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
+                </div>
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+              </span>
+              <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+              <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+            </li>
+          </template>
+        </draggable>        
 
 
-        <li v-show="showActive && task.check == false" draggable="true" @dragstart="startDrag($evt, task)" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(task)" @mouseleave="removeCancel" v-for="task in tasks" :key="task">
-          <span v-if="!task.check">
-            <div class="check" ref="check" @click="addTick(task), checker" :class="{ colored: task.check, light: !darkmode }"> 
-              <img v-if="task.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
-            </div>
-            <p class="task" :class="{ checked: task.check, light: !darkmode }" ref='task' >{{ task.text }}</p>
-          </span>
-          <img v-show="task.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-          <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-        </li>
+        <draggable v-model="tasks" tag="transition-group" item-key="id">
+          <template #item="{element}">            
+            <li v-show="showComp && element.check == true" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
+              <span>
+                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                  <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
+                </div>
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+              </span>
+              <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+              <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+            </li>
+          </template>
+        </draggable>        
 
-
-        <li v-show="showComp && task.check == true" draggable="true" @dragstart="startDrag($evt, task)" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(task)" @mouseleave="removeCancel" v-for="task in tasks" :key="task">
-          <span>
-            <div class="check" ref="check" @click="addTick(task), checker" :class="{ colored: task.check, light: !darkmode }"> 
-              <img v-if="task.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
-            </div>
-            <p v-if="task.check" class="task" :class="{ checked: task.check, light: !darkmode }" ref='task' >{{ task.text }}</p>
-          </span>
-          <img v-show="task.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-          <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
-        </li>
       </ul>
 
       <div id="info">
         <span> {{ unchecked }} items left</span>
         
         <span id="actions" >
-          <p @click="returnAll" :class="{ active: showAll }">All</p>
-          <p @click="returnActive" :class="{ active: showActive }">Active</p>
-          <p @click="returnComp" :class="{ active: showComp }">Completed</p>
+          <p @click="returnAll" :class="{ active: showAll, light: !darkmode }">All</p>
+          <p @click="returnActive" :class="{ active: showActive, light: !darkmode }">Active</p>
+          <p @click="returnComp" :class="{ active: showComp, light: !darkmode }">Completed</p>
         </span>
 
         <span id="clear" :class="{ light: !darkmode }" @click="clear">Clear completed</span>
@@ -77,25 +96,31 @@
         <p @click="returnComp" :class="{ active: showComp, light: !darkmode }">Completed</p>
       </span>
     </div>
-  
 
     <small class="bgdark" :class="{bgtext: !darkmode }">Drag and drop to reorder list</small>
 
     <div class="attribution" :class="{ light: !darkmode }">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>
-    Coded by <a href="#">Dapo</a>
+      Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>
+      Coded by <a href="https://www.linkedin.com/in/dapo-ola-olatunji-5128b0160" target="_blank">Dapo</a>
     </div>
+    
   </div>
     
    
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 
 export default {
   name: 'App',
+  components: {
+    draggable,
+  },
   data() {
     return {
+      drag: false,
+
       task: "",
       tasks: [
         {id: 1, text:"Empty the dustbin", hover: false, check: false},
@@ -118,11 +143,6 @@ export default {
       this.textArray.push(value.text)
     }
     this.countTask()
-  },
-  watch: {
-    mobileScreen() {
-      console.log("watching check")
-    }
   }, 
   methods: {
     countTask() {
@@ -197,16 +217,6 @@ export default {
         }
       }
       this.unchecked = j
-    },
-    startDrag(evt, task) {
-      evt.dataTransfer.dropEffect = 'move'
-      evt.dataTransfer.effectAllowed = 'move'
-      evt.dataTransfer.setData('taskID', task.id)
-    },
-    onDrop(evt, list) {
-      const taskID = evt.dataTransfer.getData('taskId')
-      const task = this.tasks.find(task => task.id == taskID)
-      task.list = list
     },
     returnAll() {
       this.showActive = false
@@ -304,7 +314,6 @@ input, #mobile-actions {
   outline: none;
   padding: 1rem 4rem;
   color: hsl(236, 33%, 92%);
- 
 }
 input, #tasks, #mobile-actions {
   background: hsl(235, 24%, 19%);
@@ -312,9 +321,14 @@ input, #tasks, #mobile-actions {
   font-size: 18px;
   /* box-shadow: 5px 10px 8px rgba(27, 26, 26, 0.2); */
 }
+#tasks, #mobile-actions {
+  box-shadow: -5px 10px 20px 10px rgba(15, 15, 15, 0.4);
+}
 input.light, #tasks.light, #mobile-actions.light {
-  background: hsl(234, 39%, 85%);
   background: hsl(0, 0%, 98%);
+}
+#tasks.light, #mobile-actions.light {
+  box-shadow: -5px 10px 20px 10px rgb(230, 230, 230), -5px 10px 20px 10px rgb(230, 230, 230);
 }
 ul {
   min-height: 2rem;
@@ -344,13 +358,15 @@ li span p {
   padding: calc(1.5rem/2);
   border: rgba(255, 255, 255, 0.2) solid 1px;
   border-radius: 50%;
- 
   box-sizing: content-box;
   cursor: pointer;
+  outline: none !important;
 }
 .check:hover, .check.light:hover {
   /* border-image: linear-gradient(150deg, #57ddff, #c058f3); */
+
   border-color: rgb(59, 59, 185);
+
 }
 .check.light, .first-one.light, li.light {
   border-color: hsl(233, 11%, 84%);
@@ -410,7 +426,7 @@ li span p {
 #actions p.light:hover, #clear.light:hover, #mobile-actions p.light:hover {
   color: hsl(235, 19%, 35%);
 }
-.active, #actions .active:hover, #mobile-actions p.active {
+.active, #actions .active:hover, #actions .active.light:hover, #mobile-actions span p.active, #mobile-actions span p.active:hover, #mobile-actions span p.light.active {
   color: hsl(220, 98%, 61%);
 }
 #clear {
@@ -428,9 +444,6 @@ li span p {
 }
 #mobile-actions span p.light {
   color: hsl(234, 11%, 52%);
-}
-#mobile-actions span p.active {
-  color: hsl(220, 98%, 61%);
 }
 .bgdark {
   color: hsl(233, 14%, 35%);
@@ -454,6 +467,12 @@ small {
 .attribution a { 
   color: hsl(228, 45%, 44%); 
   text-decoration: none;
+}
+.checked:hover {
+  color: hsl(233, 14%, 35%);
+}
+.checked.light:hover {
+  color: hsl(233, 11%, 84%);
 }
 
 @media (max-width:865px) {
@@ -515,3 +534,14 @@ small {
 // drag-and-drop
 // border-color
 // box-shadow
+
+        <!-- <li v-show="showAll" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(task)" @mouseleave="removeCancel" v-for="task in tasks" :key="task">
+          <span>
+            <div class="check" ref="check" @click="addTick(task), checker" :class="{ colored: task.check, light: !darkmode }"> 
+              <img v-if="task.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
+            </div>
+            <p class="task" :class="{ checked: task.check, light: !darkmode }" ref='task' >{{ task.text }}</p>
+          </span>
+          <img v-show="task.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
+          <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(task)">
+        </li> -->
