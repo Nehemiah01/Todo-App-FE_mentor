@@ -153,7 +153,7 @@ export default {
     }
     this.countTask() 
 
-    this.task = localStorage.getItem('storedTask')
+    this.task = localStorage.getItem('storedTask') || ''
     // this.tasks = JSON.parse(localStorage.getItem('storedTasks')) || []
   },
 
