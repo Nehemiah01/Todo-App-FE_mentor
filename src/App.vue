@@ -133,27 +133,27 @@ export default {
     }
   },
 
-  watch: {
-    task() {
-      if (typeof(Storage) !== 'undefined') {
-        localStorage.setItem('storedTask', this.task)
-      }
-    },
+  // watch: {
+  //   task() {
+  //     if (typeof(Storage) !== 'undefined') {
+  //       localStorage.setItem('storedTask', this.task)
+  //     }
+  //   },
 
-    // tasks() {
-    //   if (typeof(Storage) !== 'undefined') {
-    //     localStorage.setItem('storedTasks', JSON.stringify(this.tasks))
-    //   }
-    //   deep: true
-    // }
-  },
+  //   // tasks() {
+  //   //   if (typeof(Storage) !== 'undefined') {
+  //   //     localStorage.setItem('storedTasks', JSON.stringify(this.tasks))
+  //   //   }
+  //   //   deep: true
+  //   // }
+  // },
   mounted() {
     for (const value of this.tasks) {
       this.textArray.push(value.text)
     }
     this.countTask() 
 
-    this.task = localStorage.getItem('storedTask') || ''
+    // this.task = localStorage.getItem('storedTask') || ''
     // this.tasks = JSON.parse(localStorage.getItem('storedTasks')) || []
   },
 
