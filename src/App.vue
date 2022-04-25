@@ -10,47 +10,42 @@
   <div id="center">
     <header>
       <h1 id="header-title">Todo</h1>
-      <img v-show="darkmode" @click="changeTheme" ref="sun" class="theme-logo" src="./assets/images/icon-sun.svg" alt="" >
-      <img v-show="!darkmode" @click="changeTheme" ref="sun" class="theme-logo" src="./assets/images/icon-moon.svg" alt="" >
+      <img v-show="darkmode" @click="changeTheme" class="theme-logo" src="./assets/images/icon-sun.svg" alt="" >
+      <img v-show="!darkmode" @click="changeTheme" class="theme-logo" src="./assets/images/icon-moon.svg" alt="" >
     </header>
 
     <span class="input">
       <div class="first-one" :class="{ light: !darkmode }"> </div>
       <input type="text" :class="{ light: !darkmode }" v-model="task" @keyup.enter.exact="addTask" placeholder="Create a new todo...">
     </span>
-
-    <!-- <draggable v-model="tasks" tag="transition-group" item-key="id">
-      <template #item="{element}">
-          <div> {{element.text}} </div>
-      </template>
-    </draggable> -->
     
     <div id="tasks" :class="{ light: !darkmode }">
-
       <ul>
-        <draggable v-model="tasks" tag="transition-group" item-key="id">
+        <draggable v-model="tasks" tag="transition-group" :component-data="{name:'flip'}" item-key="id" ghost-class="g-class">
           <template #item="{element}">            
-            <li v-show="showAll" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
+            <li v-show="showAll" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel" @mousedown="drag=true" @mouseup="removeborder" @end="drag=false"> 
               <span>
-                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
-                </div>
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+                </div> 
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
-              <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
-              <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+              <img v-show="element.hover" class="cancel desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
+              <img class="cancel mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
             </li>
           </template>
         </draggable>
 
-        <draggable v-model="tasks" tag="transition-group" item-key="id">
+        <div> {{ completed }} </div>
+
+        <draggable v-model="tasks" tag="transition-group" item-key="id" @start="drag=true" @end="drag=false">
           <template #item="{element}">            
             <li v-show="showActive && element.check == false" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
               <span>
-                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
                 </div>
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
               <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
               <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
@@ -63,10 +58,10 @@
           <template #item="{element}">            
             <li v-show="showComp && element.check == true" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
               <span>
-                <div class="check" ref="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
+                <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
                 </div>
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" ref='task' >{{ element.text }}</p>
+                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
               <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
               <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
@@ -134,16 +129,34 @@ export default {
       showAll: true,
       showActive: false,
       showComp: false,
-      darkmode: true,
-      mobileScreen: false
+      darkmode: true
+    }
+  },
+
+  watch: {
+    task() {
+      if (typeof(Storage) !== 'undefined') {
+        localStorage.setItem('storedTask', this.task)
+      }
+    },
+
+    tasks() {
+      if (typeof(Storage) !== 'undefined') {
+        localStorage.setItem('storedTasks', JSON.stringify(this.tasks))
+      }
+      deep: true
     }
   },
   mounted() {
     for (const value of this.tasks) {
       this.textArray.push(value.text)
     }
-    this.countTask()
-  }, 
+    this.countTask() 
+
+    this.task = localStorage.getItem('storedTask')
+    this.tasks = JSON.parse(localStorage.getItem('storedTasks')) || []
+  },
+
   methods: {
     countTask() {
       this.tasks.forEach(task => {
@@ -179,7 +192,6 @@ export default {
       this.task = ''
 
       this.checker()
-      // console.log(this.textArray)
     },
     deleteTask(task) {
       this.tasks = this.tasks.filter((tsk) => {
@@ -189,7 +201,6 @@ export default {
 
       this.unchecked -= 1
       
-      // console.log(this.textArray)
       this.checker()
     },
     showCancel(task) {
@@ -246,7 +257,17 @@ export default {
       console.log(j)
 
       this.textArray = j
-      console.log(this.textArray)
+    },
+    border() {
+      // console.log(this)
+      this.$refs.li.classList = 'border'
+      // console.log(this.$refs.li)
+      // console.log(typeof(Storage))
+    },
+    draggable() {
+      // this.$refs.li.classList = 'sortable-chosen sortable-ghost'
+      this.$refs.li.setAttribute('draggable', 'true')
+      console.log(this.$refs.li)
     }
   }
 }
@@ -346,6 +367,7 @@ li {
   align-items: center;
   padding: 1rem 1.4rem;
   color: hsl(234, 39%, 85%);
+  cursor: move;
 }
 li span {
   display: flex;
@@ -353,6 +375,19 @@ li span {
 }
 li span p {
   margin: 0 1rem;
+}
+.sortable-drag {
+  opacity: 0;
+}
+.flip-move {
+  transition: transform 0.5s;
+}
+.border {
+  border-left: rgb(59, 59, 185) solid 2px;
+}
+.g-class {
+  box-shadow: 10px 10px 5px -1px rgba(0, 0, 0, 0.14);
+  opacity: 0.7;
 }
 .check, .first-one {
   padding: calc(1.5rem/2);
@@ -390,8 +425,8 @@ li span p {
 .checked.light {
   color: hsl(233, 11%, 84%);
 }
-.cross:hover {
-  display: unset;
+.cancel {
+  cursor: pointer;
 }
 .task {
   cursor: pointer;
