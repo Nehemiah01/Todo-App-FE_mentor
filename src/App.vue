@@ -28,7 +28,7 @@
                 <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
                 </div> 
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
+                <p @click="addTick(element), checker" class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
               <img v-show="element.hover" class="cancel desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
               <img class="cancel mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
@@ -45,7 +45,7 @@
                 <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
                 </div>
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
+                <p @click="addTick(element), checker" class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
               <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
               <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
@@ -61,7 +61,7 @@
                 <div class="check" @click="addTick(element), checker" :class="{ colored: element.check, light: !darkmode }"> 
                   <img v-if="element.check" class="img-check" src=".\assets\images\icon-check.svg" alt=""> 
                 </div>
-                <p class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
+                <p @click="addTick(element), checker" class="task" :class="{ checked: element.check, light: !darkmode }" >{{ element.text }}</p>
               </span>
               <img v-show="element.hover" class="desktop" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
               <img class="mobile" src= "./assets/images/icon-cross.svg" alt="" @click="deleteTask(element)">
@@ -140,12 +140,12 @@ export default {
       }
     },
 
-    tasks() {
-      if (typeof(Storage) !== 'undefined') {
-        localStorage.setItem('storedTasks', JSON.stringify(this.tasks))
-      }
-      deep: true
-    }
+    // tasks() {
+    //   if (typeof(Storage) !== 'undefined') {
+    //     localStorage.setItem('storedTasks', JSON.stringify(this.tasks))
+    //   }
+    //   deep: true
+    // }
   },
   mounted() {
     for (const value of this.tasks) {
@@ -154,7 +154,7 @@ export default {
     this.countTask() 
 
     this.task = localStorage.getItem('storedTask')
-    this.tasks = JSON.parse(localStorage.getItem('storedTasks')) || []
+    // this.tasks = JSON.parse(localStorage.getItem('storedTasks')) || []
   },
 
   methods: {
