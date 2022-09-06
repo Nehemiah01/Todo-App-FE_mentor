@@ -36,8 +36,6 @@
           </template>
         </draggable>
 
-        <div> {{ completed }} </div>
-
         <draggable v-model="tasks" tag="transition-group" item-key="id" @start="drag=true" @end="drag=false">
           <template #item="{element}">            
             <li v-show="showActive && element.check == false" ref="li" :class="{ light: !darkmode }" @mouseenter="showCancel(element)" @mouseleave="removeCancel"> 
@@ -119,7 +117,7 @@ export default {
       task: "",
       tasks: [
         {id: 1, text:"Empty the dustbin", hover: false, check: false},
-        {id: 2, text:"Go to the toilet", hover: false, check: false},
+        {id: 2, text:"Check up on my CL", hover: false, check: false},
         {id: 3, text:"Preach the gospel", hover: false, check: false},
         {id: 4, text:"Listen to Apostle Joshua Selman's message", hover: false, check: false},
         {id: 5, text:"Call El Shakar", hover: false, check: false}
@@ -192,6 +190,8 @@ export default {
       this.task = ''
 
       this.checker()
+      
+      console.log(this.tasks)
     },
     deleteTask(task) {
       this.tasks = this.tasks.filter((tsk) => {
@@ -388,7 +388,11 @@ li span p {
 .g-class {
   box-shadow: 10px 10px 5px -1px rgba(0, 0, 0, 0.14);
   opacity: 0.7;
+  border-left: rgb(59, 59, 185) solid 2px;
 }
+/* .light .g-class {
+  border-left: rgb(59, 59, 185) solid 2px;
+} */
 .check, .first-one {
   padding: calc(1.5rem/2);
   border: rgba(255, 255, 255, 0.2) solid 1px;
